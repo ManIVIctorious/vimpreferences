@@ -1,0 +1,265 @@
+Vim Regex Machine (http://www.vimregex.com/)
+
+  "Escaped" characters (metacharacters)
+
+    .       any character except new line
+    \s      whitespace character
+    \S      non-whitespace character
+    \d      digit
+    \D      non-digit
+    \x      hex digit
+    \X      non-hex digit
+    \o      octal digit
+    \O      non-octal digit
+    \h      head of word character (a,b,c...z,A,B,C...Z and _)
+    \H      non-head of word character
+    \p      printable character
+    \P      like \p, but excluding digits
+    \w      word character
+    \W      non-word character
+    \a      alphabetic character
+    \A      non-alphabetic character
+    \l      lowercase character
+    \L      non-lowercase character
+    \u      uppercase character
+    \U      non-uppercase character
+  
+  Quantifiers
+    *         matches 0 or more of the preceding characters, ranges or metacharacters 
+              .* matches everything including empty line
+    \+        matches 1 or more of the preceding characters...
+    \=        matches 0 or 1 more of the preceding characters...
+    \{n,m}    matches from n to m of the preceding characters...
+    \{n}      matches exactly n times of the preceding characters...
+    \{,m}     matches at most m (from 0 to m) of the preceding characters...
+    \{n,}     matches at least n of of the preceding characters...
+    \{-}      matches 0 or more of the preceding atom, as few as possible
+    \{-n,m}   matches 1 or more of the preceding characters...
+    \{-n,}    matches at lease or more of the preceding characters...
+    \{-,m}    matches 1 or more of the preceding characters...
+                  where n and m are positive integers (>0) 
+
+Plugins
+
+Pfad-Operationen
+
+  Pfadoperationen stellen die Möglichkeiten vom VIM zur Navigation in Verzeichnissen dar:
+
+    :cd         Verzeichnis wechseln
+    :cd %:p:h   Zum Verzeichnis der aktuellen Datei springen (%...aktuelle Datei, :p...fullpath,
+                    :h...ohne den letzten Eintrag (Dateiname))
+    :pwd        Gibt das aktuelle Verzeichnis aus
+    :ls         List open Buffers zeigt geöffnete VIM-Buffer an.
+                    Zwischen den Puffern kann mit Hilfe von :b [Zahl] gewechselt werden.
+    :bn         Springe zum nächsten geöffneten Puffer
+    :bp         Springe zum vorherigen geöffneten Puffer
+    <C-^>       Wechsle zwischen den beiden zuletzt genutzten Puffern
+    :bd         Entferne den geöffneten Puffer
+
+  Explorer
+
+        Der VIm-Explorer kann mit den Kommandos geöffnet werden.
+    Im Explorer können neue Dateien mit % erstellt, mit R umbenannt und mit D gelöscht werden.
+
+    :e.     Explorer im aktuellen Fenster   (alternativ :E[xplore])
+    :sp.    Explorer im Split-View          (alternativ :Sex[plore])
+    :vsp.   Explorer im vertical-Split-View (alternativ :Vex[plore])
+
+Normalmodus (aus allen Modi erreichbar über <Esc>)
+
+  Befehle
+
+    :e[dit]         [Datei]     Datei öffnen, existiert die Datei nicht so wird sie erstellt.
+    :sp[lit]        [Datei]     Datei wird in horizontal geteiltem Modus geöffnet.
+                                    Wechsel zwischen den Unterfenstern durch <C-w> Bewegungstaste.
+                                    "<C-w> =" macht alle Unterfenster gleich groß.
+                                    "<C-w> _" verkleinert alle split-Fenster unter/oberhalb des aktuellen
+                                    "<C-w> |" verkleinert alle vsplit-Fenster neben dem aktuellen.
+                                    "<C-w> [HJKL]" bewegt das aktuelle Fenster nach [links,unten,oben,rechts].
+                                    "<C-w> T" bewegt das aktuelle Unterfenster in einen neuen Tab.
+    :vsp[lit]       [Datei]     Datei wird im vertikal geteilten Modus geöffnet, Befehle wie in split.
+    :on[ly]                     Schließt alle Unterfenster mit Ausnahme des aktuellen.
+    :tabe[dit]      [Datei]     Datei in neuem Tab öffnen, nicht existierende Dateien werden erstellt.
+                                    Zwischen den Tabs wird mit <C-PageUp> bzw. <C-PageDown> gewechselt.
+    :tabo[nly]                  Schließt alle Tabs mit Ausnahme des aktuellen.
+    :tabc[lose]                 Schließt den aktuellen Tab mit allen Unterfenstern.
+    :tabm[ove]      [number]    Bewegt den aktuellen Tab an die gewünschte Position (Zählung beginnt mit 0)
+    :mk[session]    [Datei]     Erstellt eine VIM-session in der alle geöffneten Dateien und die darin
+                                    besetzten Positionen gespeichert werden.
+                                    Um eine Session zu laden kann VIM mit VIM -S [Datei] gestartet werden.
+    :w[rite]        [Datei]     Speichern
+    :q[uit]                     Schließt die geöffnete Datei, wurde die Datei bearbeitet muss sie mit
+                                    :q! beendet werden.
+    :bd[elete]      [Buffer]    Schließt den aktuellen bzw. gewählten Puffer. Buffer kann hierbei für die
+                                    Puffer-Nummer (zu sehen mittels :ls) oder dessen Namen stehen.
+    :h[elp]         command     Öffnet die Hilfe. Wichtige Hilfeseiten:
+                                    ":h usr_toc"        öffnet Inhaltsverzeichnis
+                                    ":h key-notation"   Zeigt die VIm Bezeichnungen spezieller Tasten an
+    :ec[ho]         "String"    Ausgabe des Strings
+    :retab                      Ersetzt alle Tabulatoren der aktuellen Datei durch Leerzeichen.
+    :opt[ions]                  Öffnet die Einstellungen, die hier gesetzten Einstellungen können mit Hilfe
+                                    der .vimrc Datei im Home-Directory eingestellt werden.
+    :%s/template/Änderung/      Suchen und ersetzen. Anstelle des % Zeichens (aktuelle Datei) kann auch eine
+                                    Reichweite wie z.B.: 22,42 eingetragen werden (Von Zeile 22 bis Zeile 42)
+                                    Anstelle des Slashes (/) kann auch ein anderer delimiter, wie etwa +
+                                    verwendet werden. (besser zum ersetzen von Pfadangaben, da nicht jeder
+                                    Slash escaped werden muss)
+    :%g/template/Befehl         Ähnlicher Syntax zu Suchen und ersetzen. Mit g werden alle Zeilen innerhalb der
+                                    range selektiert auf die das template zutrifft. Ein nachfolgender Befehl
+                                    wird dann auf diese Zeilen angewandt (bsp. d um die Zeile zu löschen oder
+                                    y um sie zu kopieren).
+
+    Beispiele und nützliche Kommandos:
+
+      :s/xxx/yyy/           Ersetzt das erste Auftauchen des Strings xxx durch yyy in der aktuellen Zeile
+      :s/xxx/yyy/g          Ersetzt jedes Auftauchen des Strings xxx durch yyy in der aktuellen Zeile
+      :s/xxx/yyy/gc         Ersetzt jedes Auftauchen des Strings xxx durch yyy in der aktuellen Zeile,
+                                fragt jedoch nach Bestätigung ([c]onfirm)
+
+      :%g+^\s*$+d           Löscht (d) alle Zeilen innerhalb der Datei (%) die nur aus 0 oder mehr
+                                Leerzeichen bestehen. (^-Dateianfang, \s* 0 oder mehr Leerzeichen,
+                                $ Dateiende) Im Falle von :g wird das %-Zeichen eigentlich nicht benötigt.
+      :%s/\s*$//            Entfernt alle "trailing whitespaces".
+      :%s+^\s*++            Entfernt alle führenden Leerzeichen.
+      :w ! sudo tee %       Schreibt eine Datei mit root-Rechten, auch wenn Vim nicht als root ausgeführt
+                                wurde.
+
+    VIM-TIME-MACHINE
+
+      :earlier      [time,count]    VIM bringt einen zu einem früheren Zeitpunkt zurück:
+                                        Dieser Zeitpunkt kann entweder eine Zahl sein (so viele Änderungen)
+                                        oder eine Zeit durch anhängen von s (Sekunden), m (Minuten), h(Stunden)
+                                        oder d (Tagen). -> ":earlier 4m" schickt einen also 4 Minuten in die Vergangenheit
+      :later        [time,count]    Later ist die Umkehrung von ":earlier", ":later 45" bringt einen
+                                        45 Schritte zurück in die Zukunft.
+      :u[ndo]       [changes]   ":undo 5" macht 5 Änderungen des aktuellen Hauptzweig des "Zeitbaumes" rückgängig
+      :red[o]       [changes]   Wie ":undo"
+      :undolist                 Zeigt eine Liste von Änderungen in Baumstruktur an.
+
+      g-                        Earlier: einen Schritt in die Vergangenheit
+      g+                        Later: einen Schritt zurück in die Zukunft
+      u                         Undo: Ein Schritt zurück, kann mit vorangestellter Zahl verwendet werden.
+      <C-r>                     Redo: Ein Schritt vor, kann mit vorangestellter Zahl verwendet werden.
+
+  Navigation
+
+    /Suchstring     Suche nach erstem Auftreten des Suchstrings (Achtung: Suche ist Caps-Sensitive)
+    //              Sucht automatisch nach dem zuletzt eingegebenen String
+    n bzw. N        Mit n springt man zum nächsten Auftreten des Suchstrings, mit N zum Vorherigen.
+    *               Suche nach auftreten des Wortes das sich unter dem Cursor befindet.
+    ^               Sprung zum Zeilenanfang.
+    $               Sprung zum Zeilenende.
+    <C-b>           <PageUp>
+    <C-f>           <PageDown>
+    H               Springe zur ersten Zeile des aktuellen Bildausschnittes.
+                        (5H -> 5. Zeile des Bildausschnittes)
+    M               Springe zur mittleren Zeile des aktuellen Bildausschnittes.
+    L               Springe zur letzten Zeile des aktuellen Bildausschnittes.
+                        (5L -> 5. letzte Zeile des Bildausschnittes)
+
+        Setzen einer Marke: Häufig muss die aktuelle Position verlassen werden um an einer anderen Stelle
+    weiterarbeiten zu können. Um die aktuelle Position später wiederzufinden können bis zu 52 Marken gesetzt
+    werden (a-z, A-Z).
+
+    mx      Setzt die Marke x,  x in (a-z, A-Z)
+    'x      Wiederaufrufen der Marke x
+
+        Die nachfolgenden Navigations Befehle können durch das Voranstellen von Zahlen erweitert werden,
+    Beispielsweise führt "b" dazu ein Wort nach hinten (back) zu springen. Die Eingabe von "7b" würde
+    hingegen 7 Wörter nach hinten springen. "G" führt zur letzten Zeile des Dokumentes, "7G" zur 7. Zeile.
+
+    fx      Springt zum nächsten Erscheinen des Buchstabens "x" in der Zeile.
+                (Beispiel: d2fx löscht von der aktuellen Cursorposition bis zum zweiten Auftreten des
+                            Buchstabens x in der aktuellen Zeile)
+    h       Ein Zeichen nach links.
+    j       Ein Zeichen nach unten.
+    k       Ein Zeichen nach oben.
+    l       Ein Zeichen nach links.
+    w       Springt zum nächsten Wortanfang.
+    b       Springt zum Anfang des aktuellen Wortes.
+    e       Springt zum Ende des aktuellen Wortes.
+    )       Springt zum nächsten Satz.
+    (       Springt zum vorherigen Satz.
+    }       Springt zum nächsten Absatz.
+    {       Springt zum vorherigen Absatz.
+    gg      Springt zur ersten Zeile des Dokumentes.
+    G       Springt zur letzten Zeile des Dokumentes, mit vorangestellter Nummer zur jeweiligen Zeile.
+    >>      Rückt um einen Tab weiter ein im visuellen Modus reicht eine einzelne Spitzklammer aus
+    <<      Rückt um einen Tab weniger ein im visuellen Modus reicht eine einzelne Spitzklammer aus
+
+        Die oben stehenden Bewegungsbefehle werden alle aufgezeichnet. Dies ermöglicht es zwischen den
+    einzelnen erreichten Positionen hin und her zu springen.
+
+    <C-o>   Führt zur vorherigen Position.
+    <C-i>   Führt zur nächsten Position.
+
+  Makros
+        In VIm können jederzeit Abläufe durch Makros automatisiert werden. Hierfür wird das q-Kommando
+    in Kombination mit einem Buchstaben oder einer Ziffer (Makroname) verwendet. Es stehen also maximal
+    36 Makros (Register) zur Verfügung.
+
+    Beispielmakros:
+        qavwr_jq    q startet den Makro-Aufzeichnungs-Modus und a ist der Name des Makros.
+                    vwr_j ist das auszuführende Makro:
+                        v:  wechsel in den visuellen Modus
+                        w:  ein Wort markieren
+                        r_: Markierung durch "_" ersetzen
+                        j:  eine Zeile nach unten
+                    Ein erneuter Aufruf von q beendet dan Makro-Aufzeichnungs-Modus.
+
+  Shortcuts
+
+    r   Ersetzt das Zeichen unter dem Cursor durch das nachfolgend eingefügte Zeichen.
+    R   Wechselt in den Überschreiben Modus
+    ~   Wandelt Großbuchstaben in Kleinbuchstaben um und umgekehrt.
+    dx  Löscht ein x, wobei x einen Navigationsbefehl darstellt
+    dd  Löscht eine Zeile
+    yx  Kopiert ein x, wobei x einen Navigationsbefehl darstellt
+    yy  Kopiert eine Zeile
+    p   Einfügen, zum einfügen stehen drei Register zur Verfügung, das Vim interne "unnamed"-register,
+            das +-Register (clipboard) und das *-Register (selection).
+            Um aus dem + oder dem *-Register heraus einzufügen kann der folgende Paste-Befehl verwendet
+            werden: "+p bzw. "*p. Dies funktioniert analog mit der kopier-Funktion.
+
+Editiermodus (Aus dem Normalmodus über a,A,i,I,o,O,s und S erreichbar)
+
+        Der Editiermodus dient dem einfachen Schreiben. Die vielen verschiedenen Möglichkeiten
+    in diesen Modus zu wechseln stellen einfache Kürzel zur schnelleren Navigation dar:
+    Auch hier funktioniert das voranstellen von Zahlen wieder, 5i test <Esc> fügt beispielsweise
+    5 mal das Wort test hintereinander ein.
+
+    a   Hängt Text nach dem Cursor an.
+    A   Hängt Text am Zeilenende an.
+    i   Fügt Text vor dem Cursor ein.
+    I   Fügt Text am Zeilenanfang ein.
+    o   Öffnet eine neue Zeile unterhalb.
+    O   Öffnet eine neue Zeile oberhalb.
+    s   Entfernt ein Zeichen und wechselt in den Editiermodus.
+    S   Entfernt eine Zeile und wechselt in den Editiermodus.
+
+Visueller Modus (Aus dem Normalmodus über v,V oder <C-v> erreichbar)
+
+        Der visuelle Modus dient der Markierung und anschließenden Bearbeitung dieses Textes.
+    Wie im Normalmodus können auch hier die oben genannten Navigationsbefehle verwendet werden.
+    Durch Tippen von "o" springt der Cursor in die gegenüberliegende (opposite) Ecke.
+
+  Markieren
+
+    v       Buchstaben bezogene Markierung von Text.
+    V       Zeilen bezogene Markierung von Text.
+    <C-v>   Blockauswahl.
+
+    Schreiben in der Blockauswahl:
+            Um über mehrere Zeilen Text zu schreiben funktionieren die Meisten sonst verwendeten
+        insert Kommandos wie etwa I,A oder c. I fügt hier Text vor der Auswahl ein, A dahinter.
+        Nachdem der Text eingegeben wurde wird die Eingabe durch drücken der <Esc> Taste auch auf
+        die anderen Zeilen angewandt.
+
+  Bearbeiten
+
+    Nach der Markierung von Text kann dieser direkt weiterbearbeitet werden:
+
+    c   change      Löscht den markierten Text und wechselt in den Einfügemodus.
+    y   yank        Kopiert die Markierung in den Zwischenspeicher
+    d   delete      Löscht den markierten Text.
+
