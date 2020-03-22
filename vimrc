@@ -1,211 +1,285 @@
-""Settings for minpac package manager
- "add minimal package manager and initialize it
+""Make Vim more useful
+ set nocompatible       "disable vi compatible mode
+ syntax on              "enable Syntax Highlighting
+ let mapleader = "-"    "set <leader> to '-' (:h mapleader)
+
+""Minpac package manager
+"{{{
+ "Initial installation (requires Linux, git, Vim >= 8.0):
+ "  git clone https://github.com/k-takata/minpac.git ~/.vim/pack/minpac/opt/minpac
+ "Iniatialize package manager
   packadd minpac
   call minpac#init()
 
- "set list of packages to be installed
-  call minpac#add('k-takata/minpac', {'type': 'opt'})
-  call minpac#add('altercation/vim-colors-solarized')
-  call minpac#add('sjl/gundo.vim')
-  call minpac#add('SirVer/ultisnips')
-
  "add shortcut commands for installing/updating and uninstalling packages
- " to uninstall just remove the package from above list and use PackClean
+ " to uninstall just remove the respective minpac#add call and run PackClean
   command! PackUpdate call minpac#update()
   command! PackClean  call minpac#clean()
 
+ "define list of packages to be installed
+  call minpac#add('k-takata/minpac', {'type': 'opt'})   "(:h minpac.txt)
+  call minpac#add('altercation/vim-colors-solarized')   "(:h solarized)
+  call minpac#add('tpope/vim-fugitive')                 "(:h fugitive)
+  call minpac#add('sjl/gundo.vim')                      "(:h Gundo-contents)
+  call minpac#add('preservim/nerdtree')                 "(:h NERDTree-contents)
+    call minpac#add('Xuyuanp/nerdtree-git-plugin')
+  call minpac#add('SirVer/ultisnips')   "(:h UltiSnips, UltiSnips-basic-syntax)
+"}}}
+
 ""Settings specific for installed packages
+"{{{
  "Map :GundoToggle to <F4>
+  if has("python3") | let g:gundo_prefer_python3 = 1 | endif
   nnoremap <F4> :GundoToggle<CR>
+ "Map :NERDTreeToggle to <leader>N
+  noremap <leader>N :NERDTreeToggleVCS<CR>
+"}}}
 
-""Settings for the graphical user interface and syntax highlighting
-  syntax on                   "enable Syntax Highlighting
-  set background=dark         "possible values: light/dark
-  set guifont=Monospace\ 10   "to set interactively type 'set guifont=*' in gvim
+""An X11-aware Vim provides the two selection registers PRIMARY ("*) and CLIPBOARD ("+)
+ "Most applications provide their current selection via PRIMARY "*
+ "and use CLIPBOARD "+ for cut/copy/paste operations
+ set clipboard=unnamedplus  "use "+ for yank/delete/change/put operations
 
- "set used colorscheme for GUI-mode and terminal mode respectively
-  if has("gui_running")
-    colorscheme solarized
-  else
-    colorscheme desert
-  endif
+"Set GUI and terminal appearance
+ if has("gui_running")
+   colorscheme solarized        "GUI colorscheme
+   set background=light         "possible values for solarized: light/dark
+   set guifont=Monospace\ 10    "to set interactively type 'set guifont=*' in gvim
+ else
+   colorscheme elflord          "terminal colorscheme
+ endif
 
+""There are three types of options in Vim:
+ "{{{
+ "All of their values can be queried with "set <name>?"
+""Boolean options:
+ "         set with "<name>"
+ "       unset with "no<name>"
+ "      toggle with "<name>!"
+""String and numeric options:
+ "         set with "<name>=<value>"
+""Array options:
+ "         set with "<name>=<value>"
+ "   add value with "<name>+=<value>"
+ "remove value with "<name>-=<value>"
+ "}}}
 
-""Settings applyable to standard/unextended vim
+ "Bools
+  set wrap           "wrap line at end of window
+  set linebreak      "wrap whole words
+  set number         "display line numbers
+  set splitright     "open new vertical splits on the right
+  set showcmd        "display incomplete commands (bottom right)
+  set hidden         "don't show an error message when switching from a modified buffer
+  set wildmenu       "displays auto-completed command list on pressing wildchar (i.e. tab)
+ "set wildignorecase "case insensitive completion in wildmenu
+  set visualbell     "flash the buffer when encountering an error (e.g. invalid movement)
 
-cd %:p:h                    "automatically start in working-directory
-"Booleans, set with "<name>", unset with "no<name>" or toggle with "<name>!"
-set nocompatible            "disables vi compatibility mode
-set wrap                    "wrap line at end of window
-set linebreak               "wrap whole words
-set wildmenu                "shows auto-complete on command-line.
-set wildignorecase          "case insensitive in filename completion
-set number                  "Show line Numbers
-set visualbell              "Error bells are displayed visually.
-set smartindent             "Indenting source-code
-set breakindent             "line wraps are indented
-set showcmd                 "display incomplete commands (bottom right)
-set hidden                  "don't show an error message when switching
-                                "from a modified buffer
+ "Search (:h /, magic, pattern-overview)
+  set ignorecase     "ignore case when using a search pattern
+  set smartcase      "caps sensitive when upper-case in search pattern
+  set incsearch      "Incremental search -> search as you type
 
-"Non Boolean Arrays, set with "set <name>=<value>"
-set t_ti= t_te=             "don't clear screen after exiting in terminal
-set tabpagemax=100          "set maximum of displayed tabs to 100
-set encoding=utf-8          "use utf-8
-set clipboard=unnamedplus   "Allow yanking and pasting with X11-Clipboard
-set display+=lastline       "display lines, even when they don't fit in window
-set nrformats=bin,hex,alpha "increment/decrement numbers and chars
-                              "octal numbers start with 0 and hex with 0x
-"set foldmethod=indent       "fold text on basis of indentation.
-                                "hit "zc" to close and "zo" to open folds.
-                                "or use "za" to toggle between states.
-"set options for "makesession" 
-set ssop-=curdir
-set ssop+=sesdir
+ "Settings for tabulators and indentation (:h tabstop, autoindent)
+  set tabstop=4      "number of spaces a "\t" in the text counts for
+  set shiftwidth=4   "number of spaces used for each step of indent (>>,<<,etc.)
+  set smarttab       "backspace removes up to <shiftwidth> spaces at start of line
+  set expandtab      "expand tabs to spaces
+  set autoindent     "copy indent from current line when starting a new line
+  set smartindent    "smarter indentation in case of C-like source-code
+  set breakindent    "on line wrap the "display-lines" are indented too
 
-"Settings for persistent undo
-set undodir=~/.cache/vim/undodir
-set undofile
-set undolevels=10000        "maximum number of changes that can be undone
-set undoreload=10000        "maximum number lines to save for undo on a buffer reload
+ "Show invisibles (e.g. tabs, EOL, etc.) (:h 'list') and provide a list of
+ " displayed hidden characters and their accompanying symbols (:h 'listchars')
+  set list
+  set listchars =tab:--→
+  set listchars+=nbsp:␣
+  set listchars+=trail:•
+  set listchars+=extends:⟩
+  set listchars+=precedes:⟨
+  "set listchars+=eol:↲
 
-"Settings for Tabulators
-set smarttab
-set expandtab               "expand tabs to spaces
-set tabstop=4               "number of spaces a "\t" in the text stands for
-set shiftwidth=4            "number of spaces "\t" gets expanded to
-"set softtabstop=4           "backspace removes up to 4 spaces
-                                "(should be identical to shiftwidth)
+ "Don't flush terminal after closing vim (:h terminal-info, terminal-options)
+  set t_ti= t_te=
 
-"show invisibles (to show tabs, end of lines, etc.)
-set list                    "show invisible characters
-set listchars=tab:▸\ ,      "the characters which should be shown and which 
-                                "symbols should stand for them
- "Search
-  set ignorecase              "ignore case when using a search pattern
-  set smartcase               "caps sensitive when uppercase in search pattern
-  set incsearch               "Incremental search -> search as you type
+ "Define how automatic formatting is done (:h 'formatoptions', fo-table)
+  set formatoptions=tcrqj
 
- "Enable mouse usage
-  set mouse=a                 "enable mouse selection
-  set mousef                  "focus follows mouse in split-view
+ "Text folding (:h folding, fold-methods, fold-commands)
+  set foldmethod=marker   "Set foldmethod to marker (using foldmarker and commentstring)
+  set foldcolumn=0        "Show folding column of width <set foldcolumn?> on the left
 
-""Spell checking
+ "Spell checking (:h spell)
  "Enable spell checking in GUI-Mode
-  if has("gui_running")
-    set spell
-  else
-    set nospell
-  endif
-  
- "Set spell files and accepted languages
- " Typing 'zg' in normal mode adds good words to the first entry
- "  while '2zg' adds them to the second entry, etc.
- " 'zug' undoes the adding into the good-word list.
-  set spelllang=de,en
-  set spellfile=~/.vim/spell/de.utf-8.add,~/.vim/spell/en.utf-8.add 
+  if has("gui_running") | set spell | else | set nospell | endif
+ "Set spell files and accepted languages (:h spell-quickstart)
+  set spelllang=en_gb,de_at
+  set spellfile=~/.vim/spell/en.utf-8.add,~/.vim/spell/de.utf-8.add
+
+ "Autocompletion settings (:h ins-completion, 'completeopt')
+ "Just show completion popup instead of directly inserting the first match
+  set completeopt+=longest
+
+ "Display as much as possible of the last line in a window (:h 'display')
+  set display+=truncate
+
+ "Increase maximum number of tabs
+  set tabpagemax=100
+
+ "Set number formats besides decimal, bin (0b), hex (0x), alpha [a-zA-Z]
+  set nrformats=bin,hex,alpha
+
+ "Allow sideways moving keys to move to the next/previous line
+  set whichwrap=b,s,<,>,[,]  "traverse line breaks with arrow keys
+
+ "Enable mouse usage (:h mouse)
+  set mouse=a        "enable mouse selection in all modes as well as terminal
+  set mousefocus     "focus follows mouse in split-view
+
+ "Change cursor shape on mode switch:
+  "{{{
+  " 1 -> blinking block
+  " 2 -> solid block
+  " 3 -> blinking underscore
+  " 4 -> solid underscore
+  " 5 -> blinking vertical bar
+  " 6 -> solid vertical bar
+  "}}}
+  let &t_SI = "\<Esc>[5 q" "SI = INSERT mode
+  let &t_SR = "\<Esc>[4 q" "SR = REPLACE mode
+  let &t_EI = "\<Esc>[1 q" "EI = NORMAL mode (ELSE)
 
 
-"The Following lines contain key-maps and key-remaps to make the work with
-    "VIM a lot easier
-
-"set "<leader>" to "-"
-  let mapleader = "-"
-"Edit vimrc by hitting "<leader>v" (split) or "<leader>t" (tab)
+""Key-maps and key-remaps (:h key-mapping, map-overview) edit vimrc
+ "by hitting "<leader>e", "<leader>v" (vsplit) or "<leader>t" (tab)
+  nnoremap <leader>e :edit    $MYVIMRC<CR>
   nnoremap <leader>v :vsplit  $MYVIMRC<CR>
   nnoremap <leader>t :tabedit $MYVIMRC<CR>
-"Toggle code folding with "<space>" in normal mode
-  nnoremap <space> zA
-"To insert timestamp, press "F3"
-  nnoremap <F3> a<C-R>=strftime("%Y-%m-%d %a %H:%M %p")<CR><Esc>
-  inoremap <F3> <C-R>=strftime("%Y-%m-%d %a %H:%M %p")<CR>
-"Refresh with "F5"
-  nnoremap <F5> :e!<CR>
-  inoremap <F5> <Esc>:e!<CR>
-"Stay in visible mode after using ">" or "<" for visual indentation
-  "gv reselects the last selection
+
+ "switch cwd to the directory of the open buffer (:h filename-modifiers)
+  nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
+
+ "copy to end of line with "Y"
+  nnoremap Y y$
+
+ "if in visual mode re-select after using ">" or "<" for visual indentation
   vnoremap < <gv
   vnoremap > >gv
-"use "<C>" as modifier to work on displayed lines instead of numbered lines
-  nnoremap <C-Down>  gj
-  nnoremap <C-j>     gj
-  nnoremap <C-Up>    gk
-  nnoremap <C-k>     gk
-  nnoremap <C-^>     g^
-  nnoremap <C-0>     g0
-  nnoremap <C-$>     g$
-  vnoremap <C-Down>  gj
-  vnoremap <C-j>     gj
-  vnoremap <C-Up>    gk
-  vnoremap <C-k>     gk
-  vnoremap <C-^>     g^
-  vnoremap <C-0>     g0
-  vnoremap <C-$>     g$
-  inoremap <C-Down>  <Esc>gja
-  inoremap <C-Up>    <Esc>gka
-  inoremap <C-End>   <Esc>g$a
-  inoremap <C-Home>  <Esc>g^i
-"Move between split-windows by hitting "alt+{motion}"
-  noremap <M-Left>   <C-w>h
-  noremap <M-Down>   <C-w>j
-  noremap <M-Up>     <C-w>k
-  noremap <M-Right>  <C-w>l
-  nnoremap <M-h>     <C-w>h
-  nnoremap <M-j>     <C-w>j
-  nnoremap <M-k>     <C-w>k
-  nnoremap <M-l>     <C-w>l
-"Copy to end of line with "Y"
-  nnoremap Y y$
-"Mark everything by hitting "ctrl+a"
-  inoremap <C-a> <Esc>ggVG
-"Close Vim by hitting "<C-d>"
-  nnoremap <c-d> :q!<CR>
-  inoremap <c-d> <Esc>:q!<CR>
-"Evaluate expression with expression register
-  nnoremap Q 0yt=A<C-r>=<C-r>0<CR><Esc>
 
-"User defined "Commands" (command-mode)
-"Remove Blank Lines Command
+ "automatically close parenthesis, quotes, etc.
+  inoremap " ""<left>
+ "inoremap ' ''<left>   "interferes with words like e.g. don't
+  inoremap ( ()<left>
+  inoremap [ []<left>
+  inoremap { {}<left>
+
+ "toggle code folding with "<space>" in normal mode
+  nnoremap <space> zA
+
+ "close Vim by hitting "<C-d>"
+  nnoremap <C-d>      :q!<CR>
+  inoremap <C-d> <Esc>:q!<CR>
+
+ "jump to end of previous word with "B"
+  noremap B ge
+
+ "use |/_ to set the current window width/height widest/highest possible
+  nnoremap \| <C-w>\|
+  nnoremap _  <C-w>_
+
+ "evaluate expression with expression register
+  nnoremap Q 0yt=f=a<C-r>=<C-r>0<CR><Esc>
+
+ "remove Blank Lines Command
   command! -range=% RBL :<line1>,<line2>g/^\s*$/d
-"Reformat text that exceeds the value of ":set columns?"
-  command! -range=% Reform let x=&tw | let &tw=&co-5 | :<line1>,<line2>g/^/norm gww | let &tw=x
 
-"Bindsplit[number] function to edit in multiple columns
-function! s:bindsplit(...) abort
-    if a:0
-        let l:count=(a:1 - 1)
-    else
-        let l:count=1
-    endif
-    echom l:count
-    let l:curwin=winnr()
-    for i in range(1, l:count)
-        vsplit
-        setlocal noscrollbind
-        execute "normal! z+"
-        setlocal scrollbind
-    endfor
-    execute l:curwin . "wincmd w"
-    setlocal scrollbind
-endfunction
-command! -nargs=? -bar Bindsplit call s:bindsplit(<args>)
+ "faster buffer switching with  <C-p>, <C-n> and gb (bufferlist)
+  nnoremap gb              :ls<CR>:b<Space>
+   noremap <C-p>           :bp<CR>
+   noremap <C-n>           :bn<CR>
+   noremap <leader>bp      :bp<CR>
+   noremap <leader>bn      :bn<CR>
+  "inoremap <leader>bp <Esc>:bp<CR> "annoyingly hitting <leader> stalls input
+  "inoremap <leader>bn <Esc>:bn<CR> "annoyingly hitting <leader> stalls input
 
-"Special settings for defined circumstances, like specified file-types
-    "or file names "(autocommand)".
-if has("autocmd")
-    "enable Filetype detection
-    filetype on
+ "use "<C>" as modifier to work on displayed lines instead of numbered lines
+ "<C-^> and <C-$> are not really possible to type therefore, g^ and g$ have to be used
+ "{{{
+   noremap <C-Up>    gk
+   noremap <C-k>     gk
+   noremap <C-Down>  gj
+   noremap <C-j>     gj
+   noremap <C-Home>  g^
+   noremap <C-End>   g$
+  inoremap <C-Up>    <Esc>gka
+  inoremap <C-Down>  <Esc>gja
+  inoremap <C-Home>  <Esc>g^i
+  inoremap <C-End>   <Esc>g$a
+ "}}}
 
-    " Remove ALL autocommands for the current group.
-    "autocmd!
-    "change to directory of opened file
-    "autocmd VimEnter * cd %:p:h
-    "autocmd GuiEnter * cd %:p:h
-    "special tab behaviour for Filetypes (get Filetype by ":set filetype?")
-    autocmd FileType make setlocal ts=4 sw=4 noexpandtab
-    autocmd FileType tex  setlocal ts=2 sw=2 sts=2 expandtab wrap 
+ "move between split-windows by hitting "alt+{arrow-keys}"
+ "(unfortunately alt+{h,j,k,l} don't get sent to vim properly)
+ "{{{
+   noremap <M-Left>       <C-w>h
+   noremap <M-Down>       <C-w>j
+   noremap <M-Up>         <C-w>k
+   noremap <M-Right>      <C-w>l
+  inoremap <M-Left>  <Esc><C-w>ha
+  inoremap <M-Down>  <Esc><C-w>ja
+  inoremap <M-Up>    <Esc><C-w>ka
+  inoremap <M-Right> <Esc><C-w>la
+ "}}}
 
-    "automatically source your vimrc when saving files "named vimrc"
-    autocmd bufwritepost .vimrc source $MYVIMRC
-    autocmd bufwritepost  vimrc source $MYVIMRC
-endif
+
+""Settings for special circumstances (e.g. specified file-types or file-names)
+ if has("autocmd")
+ "enable filetype detection
+   filetype on
+
+ "automatically source your vimrc when saving files "named vimrc"
+   autocmd bufwritepost .vimrc source $MYVIMRC
+   autocmd bufwritepost  vimrc source $MYVIMRC
+
+ "change work-dir to current file's parent directory (:h filename-modifiers)
+   autocmd VimEnter * cd %:p:h
+   autocmd GuiEnter * cd %:p:h
+
+ "special tab behaviour for Filetypes (get Filetype by ":set filetype?")
+  "Makefile
+    autocmd FileType make setlocal ts=4 sw=4 sts=4 commentstring=#%s noexpandtab
+  "LaTeX
+   "local settings for tabstop and word wrapping
+    autocmd FileType tex  setlocal ts=2 sw=2 sts=2 commentstring=%%s
+   "add latex command key-word list
+    autocmd FileType tex execute 'setlocal dict+=~/.vim/words/'.&filetype.'.txt'
+   "call function to start autocompletion from dictionary file after hitting '\'
+    function! OpenCompletion()
+     "if popup menu invisible AND prvious char '\'
+      if !pumvisible() && (v:char == '\')
+       "push  before ("i") the typahead buffer
+       "must be before to not break vim makros!
+        call feedkeys("\<C-x>\<C-k>", "i")
+      endif
+    endfunction
+    autocmd Filetype tex :autocmd InsertCharPre <buffer> call OpenCompletion()
+ endif
+
+
+""Add persistent undo and swapdir
+ "{{{
+ "persistent undo
+  let vimCache = '$HOME/.cache/vim'
+ "keep undo history across sessions by storing it in a file
+  if has('persistent_undo')
+    let myUndoDir = expand(vimCache . '/undodir')   "define path
+    call system('mkdir -p ' . myUndoDir)            "make   path
+    let &undodir = myUndoDir                        "set    path
+    set undofile
+  endif
+  set undolevels=10000  "maximum number of changes that can be undone
+  set undoreload=10000  "maximum number lines to save for undo on a buffer reload
+ "swap dir
+  let mySwapDir = expand(vimCache . '/swap//')      "define path
+  call system('mkdir -p ' . mySwapDir)              "make   path
+  let &directory = mySwapDir                        "set    path
+ "}}}
