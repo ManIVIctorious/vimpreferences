@@ -1,11 +1,7 @@
-This configuration intentionally doesn't contain any spell files
+The vimrc contains a number of plugins utilizing the minpac package manager
 
-The vimrc entry contains a number of plugins (as packages)
+  - After cloning first install minpac (requires git and vim >= 8.0)
+      git clone https://github.com/k-takata/minpac.git ~/.vim/pack/minpac/opt/minpac
+  - Then start vim and run the command :PackUpdate
 
-    - After cloning run the following commands inside the .vim directory
-        mkdir -p pack/minpac/opt
-        cd pack/minpac/opt
-        git clone https://github.com/k-takata/minpac.git
-    - Then start vim and inside run the command :PackUpdate
-    - To controll the installation the command :messages can be used
-Now vim should be set up properly
+  - Vim should be set up properly now, have a lot of fun
